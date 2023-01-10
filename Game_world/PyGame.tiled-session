@@ -1,0 +1,58 @@
+{
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "Objects/Basic Grass Biom things 1.tsx",
+    "expandedProjectPaths": [
+        "Objects",
+        "."
+    ],
+    "exportAsImage.drawObjectLabels": false,
+    "exportAsImage.drawTileGrid": true,
+    "exportAsImage.useCurrentScale": false,
+    "fileStates": {
+        "Basic Charakter Actions.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "Objects/Basic Grass Biom things 1.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1.5
+        },
+        "Objects/world_bigone.tsx": {
+            "scaleInDock": 1
+        },
+        "map.tmx": {
+            "scale": 1,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 1260,
+                "y": 1171
+            }
+        }
+    },
+    "last.exportedFilePath": "C:/Users/Oliver/Documents/Github/Rocnikovy Projekt/Rocnikovy-projekt/Game world/export",
+    "last.imagePath": "C:/Users/Oliver/Documents/Github/Rocnikovy Projekt/Rocnikovy-projekt/Game world/Icons/Characters",
+    "map.height": 150,
+    "map.lastUsedExportFilter": "CSV files (*.csv)",
+    "map.lastUsedFormat": "tmx",
+    "map.tileHeight": 16,
+    "map.tileWidth": 16,
+    "map.width": 150,
+    "openFiles": [
+        "map.tmx",
+        "Objects/Basic Grass Biom things 1.tsx"
+    ],
+    "project": "PyGame.tiled-project",
+    "recentFiles": [
+        "map.tmx",
+        "Objects/Basic Grass Biom things 1.tsx",
+        "Basic Charakter Actions.tsx"
+    ],
+    "tileset.lastUsedFormat": "tsx",
+    "tileset.tileSize": {
+        "height": 16,
+        "width": 16
+    }
+}
