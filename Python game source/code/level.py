@@ -4,8 +4,9 @@ from tile import Tile
 from player import Player
 from debug import debug
 from support import *
-from rendering_objects import render
 from ui import UI
+from random import choice
+import time
 
 class Level:
 	def __init__(self):
@@ -20,22 +21,35 @@ class Level:
 		# sprite setup
 		self.create_map()
 
-		# objectt render
+		# ui render
 		self.ui = UI()
+
 
 	def create_map(self):
 		layouts = {
 			'boundary': import_csv_layout('../../Game_world/export/map_floorblock.csv'),
-			'objects': import_csv_layout('../../Game_world/export/map_object.csv')
+			'objects': import_csv_layout('../../Game_world/export/map_objects.csv')
 		}
+		graphics ={
+			'tree': import_folder("../../Game_world/Icons/Objects/tree/Tree_2x2"),
+			'stone': import_folder("../../Game_world/Icons/Objects/stone/big")
+		}
+
+
 		for style,layout in layouts.items():
 			for row_index, row in enumerate(layout):
 				for col_index, col in enumerate(row):
 					if col != '-1':
 						x = col_index * TILESIZE
 						y = row_index * TILESIZE
-						if style == 'boundary' or style == 'objects':
+						if style == 'boundary':
 							Tile((x,y),[self.obstacle_sprites],'invisible')
+						if style == 'objects' and col == '1':
+							random_tree_image = choice(graphics['tree'])
+							Tile((x,y),[self.obstacle_sprites,self.obstacle_sprites],'tree',random_tree_image)
+						if style == 'objects' and col == '17':
+							random_stone_image = choice(graphics['stone'])
+							Tile((x,y),[self.obstacle_sprites,self.obstacle_sprites],'stone',random_stone_image)
 
 		self.player = Player((1400, 1000), [self.visible_sprites], self.obstacle_sprites)
 
@@ -44,9 +58,10 @@ class Level:
 		# update and draw the game
 		self.visible_sprites.custom_draw(self.player)
 		self.visible_sprites.update()
-		self.ui.display(self.player)
-
-
+		debug(self.player.status)
+		self.ui.display(self.player,0,0)
+		if self.player.inventoryIsOpened:
+			self.ui.draw_inventory(self.player)
 
 
 class YSortCameraGroup(pygame.sprite.Group):
@@ -62,22 +77,55 @@ class YSortCameraGroup(pygame.sprite.Group):
 		# creating floor
 		self.floor_surf = pygame.image.load('../../Game_world/export/map.jpg').convert()
 		self.floor_rect = self.floor_surf.get_rect(topleft = (0,0))
+		self.floor_surf_night = pygame.image.load('../../Game_world/map_night.jpg').convert()
+		self.start_time = time.time()
+		self.day_alpha = 255
+		self.night_alpha = 0
+		self.time_changed = False
+		self.day = True
 
-		# object render
-		self.render = render()
 
 	def custom_draw(self,player):
 
-		# getting the offset 
+		# getting the offset
 		self.offset.x = player.rect.centerx - self.half_width
 		self.offset.y = player.rect.centery - self.half_height
 
+		elapsed_time = time.time() - self.start_time
+		current_minute = int(time.strftime("%M"))
+
+		if current_minute % 2 == 0:
+			self.time_changed = True		# time Day
+			self.day = True
+		else:
+			self.time_changed = True		# time Night
+			self.day = False
+
+		# self.floor_surf_night.set_alpha(255) 0 is transparent
+
+		if self.time_changed and self.day:
+			if self.day_alpha == 255:
+				self.time_changed = False
+			elif self.day_alpha < 255  and self.night_alpha >= 0:
+				self.day_alpha += 1
+				self.night_alpha -= 1
+		if self.time_changed and self.day == False:
+			if self.night_alpha == 255:
+				self.time_changed = False
+			elif self.night_alpha < 255 and self.day_alpha >= 0:
+				self.night_alpha += 1
+				self.day_alpha -= 1
+
+		self.floor_surf.set_alpha(self.day_alpha)
+		self.floor_surf_night.set_alpha(self.night_alpha)
+
 		# drawing floor
 		floor_offset_pos = self.floor_rect.topleft - self.offset
+		self.display_surface.blit(self.floor_surf_night,floor_offset_pos)
 		self.display_surface.blit(self.floor_surf,floor_offset_pos)
 
-		# drawing object
-		self.render.csv_file_cycle(floor_offset_pos)
+		debug(self.night_alpha,35,10)
+		debug(self.day_alpha,50,10)
 
 		# for sprite in self.sprites():
 		for sprite in sorted(self.sprites(),key = lambda sprite: sprite.rect.centery):

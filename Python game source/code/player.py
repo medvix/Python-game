@@ -1,7 +1,8 @@
 import pygame
 # from settings import*
 from support import import_folder
-
+from crafting import *
+from ui import *
 
 class Player(pygame.sprite.Sprite):
 	def __init__(self, pos, groups, obstacle_sprites):
@@ -9,6 +10,8 @@ class Player(pygame.sprite.Sprite):
 		self.image = pygame.image.load('../../Game_world/Icons/player.png').convert_alpha()
 		self.rect = self.image.get_rect(topleft=pos)
 		self.hitbox = self.rect.inflate(0, 16)
+
+		self.player_position = pos
 
 		# grapgics
 		self.import_player_assets()
@@ -23,7 +26,19 @@ class Player(pygame.sprite.Sprite):
 		self.attack_cooldown = 400
 		self.attack_time = None
 
+		# inventory and crafting
+		self.inventory = {"wood": 0, "stone": 0, "iron": 0}
+		self.crafting = Crafting()
+		self.crafting.set_inventory(self.inventory)
+		self.inventory_cooldown = 400
+		self.inventory_cooldown_end = 0
+
 		self.obstacle_sprites = obstacle_sprites
+		self.inventoryIsOpened = False
+
+		# mining
+		self.reach = 16		# player can mine object because he's standing close to object
+
 
 	def import_player_assets(self):
 		character_path = '../../Game_world/Icons/Characters/character/'
@@ -37,36 +52,45 @@ class Player(pygame.sprite.Sprite):
 		keys = pygame.key.get_pressed()
 
 		# movement input
+		if not self.inventoryIsOpened:
+			if keys[pygame.K_UP]:
+				self.direction.y = -1
+				self.status = 'up'
+			elif keys[pygame.K_DOWN]:
+				self.direction.y = 1
+				self.status = 'down'
+			else:
+				self.direction.y = 0
 
-		if keys[pygame.K_UP]:
-			self.direction.y = -1
-			self.status = 'up'
-		elif keys[pygame.K_DOWN]:
-			self.direction.y = 1
-			self.status = 'down'
-		else:
-			self.direction.y = 0
+			if keys[pygame.K_RIGHT]:
+				self.direction.x = 1
+				self.status = 'right'
+			elif keys[pygame.K_LEFT]:
+				self.direction.x = -1
+				self.status = 'left'
+			else:
+				self.direction.x = 0
 
-		if keys[pygame.K_RIGHT]:
-			self.direction.x = 1
-			self.status = 'right'
-		elif keys[pygame.K_LEFT]:
-			self.direction.x = -1
-			self.status = 'left'
-		else:
-			self.direction.x = 0
+			# attack input
+			if keys[pygame.K_SPACE] and not self.attacking:
+				self.attacking = True
+				self.attack_time = pygame.time.get_ticks()
+				print('attack')
 
-		# attack input
-		if keys[pygame.K_SPACE] and not self.attacking:
-			self.attacking = True
-			self.attack_time = pygame.time.get_ticks()
-			print('attack')
+			# use input
+			if keys[pygame.K_LCTRL] and not self.attacking:
+				self.attacking = True
+				self.attack_time = pygame.time.get_ticks()
 
-		# use input
-		if keys[pygame.K_LCTRL] and not self.attacking:
-			self.attacking = True
-			self.attack_time = pygame.time.get_ticks()
-			print('use')
+
+		# inventory
+		if keys[pygame.K_e]:
+			if pygame.time.get_ticks() >= self.inventory_cooldown_end:
+				self.inventoryIsOpened = not self.inventoryIsOpened
+				self.inventory_cooldown_end = pygame.time.get_ticks() + self.inventory_cooldown
+
+		if keys[pygame.K_ESCAPE] and self.inventoryIsOpened:
+			self.inventoryIsOpened = False
 
 	def get_status(self):
 
