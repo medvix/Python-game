@@ -24,7 +24,7 @@ class Level:
 		# ui render
 		self.ui = UI()
 
-
+		self.list = []
 	def create_map(self):
 		layouts = {
 			'boundary': import_csv_layout('../../Game_world/export/map_floorblock.csv'),
@@ -46,20 +46,19 @@ class Level:
 							Tile((x,y),[self.obstacle_sprites],'invisible')
 						if style == 'objects' and col == '1':
 							random_tree_image = choice(graphics['tree'])
-							Tile((x,y),[self.obstacle_sprites,self.obstacle_sprites],'tree',random_tree_image)
+							Tile((x,y),[self.visible_sprites,self.obstacle_sprites],'tree',random_tree_image)
 						if style == 'objects' and col == '17':
 							random_stone_image = choice(graphics['stone'])
-							Tile((x,y),[self.obstacle_sprites,self.obstacle_sprites],'stone',random_stone_image)
+							Tile((x,y),[self.visible_sprites,self.obstacle_sprites],'stone',random_stone_image)
 
 		self.player = Player((1400, 1000), [self.visible_sprites], self.obstacle_sprites)
-
 
 	def run(self):
 		# update and draw the game
 		self.visible_sprites.custom_draw(self.player)
 		self.visible_sprites.update()
-		debug(self.player.status)
 		self.ui.display(self.player,0,0)
+		debug(self.list)
 		if self.player.inventoryIsOpened:
 			self.ui.draw_inventory(self.player)
 
@@ -124,8 +123,7 @@ class YSortCameraGroup(pygame.sprite.Group):
 		self.display_surface.blit(self.floor_surf_night,floor_offset_pos)
 		self.display_surface.blit(self.floor_surf,floor_offset_pos)
 
-		debug(self.night_alpha,35,10)
-		debug(self.day_alpha,50,10)
+		debug(self.day,35,10)
 
 		# for sprite in self.sprites():
 		for sprite in sorted(self.sprites(),key = lambda sprite: sprite.rect.centery):
