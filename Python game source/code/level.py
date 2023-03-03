@@ -7,6 +7,7 @@ from support import *
 from ui import UI
 from random import choice
 import time
+import player
 
 class Level:
 	def __init__(self):
@@ -18,13 +19,17 @@ class Level:
 		self.visible_sprites = YSortCameraGroup()
 		self.obstacle_sprites = pygame.sprite.Group()
 
+		# objects position
+		self.trees = tree_position()
+
 		# sprite setup
 		self.create_map()
 
 		# ui render
 		self.ui = UI()
 
-		self.list = []
+		# objects position
+
 	def create_map(self):
 		layouts = {
 			'boundary': import_csv_layout('../../Game_world/export/map_floorblock.csv'),
@@ -47,21 +52,21 @@ class Level:
 						if style == 'objects' and col == '1':
 							random_tree_image = choice(graphics['tree'])
 							Tile((x,y),[self.visible_sprites,self.obstacle_sprites],'tree',random_tree_image)
+							self.trees.add_position('tree',x,y)
 						if style == 'objects' and col == '17':
 							random_stone_image = choice(graphics['stone'])
 							Tile((x,y),[self.visible_sprites,self.obstacle_sprites],'stone',random_stone_image)
+							self.trees.add_position('stone',x,y)
 
-		self.player = Player((1400, 1000), [self.visible_sprites], self.obstacle_sprites)
+		self.player = Player((1400, 1000), [self.visible_sprites], self.obstacle_sprites, self.trees.get_positions())
 
 	def run(self):
 		# update and draw the game
 		self.visible_sprites.custom_draw(self.player)
 		self.visible_sprites.update()
 		self.ui.display(self.player,0,0)
-		debug(self.list)
 		if self.player.inventoryIsOpened:
 			self.ui.draw_inventory(self.player)
-
 
 class YSortCameraGroup(pygame.sprite.Group):
 	def __init__(self):
@@ -102,6 +107,7 @@ class YSortCameraGroup(pygame.sprite.Group):
 
 		# self.floor_surf_night.set_alpha(255) 0 is transparent
 
+		# changing day and night
 		if self.time_changed and self.day:
 			if self.day_alpha == 255:
 				self.time_changed = False
@@ -122,8 +128,6 @@ class YSortCameraGroup(pygame.sprite.Group):
 		floor_offset_pos = self.floor_rect.topleft - self.offset
 		self.display_surface.blit(self.floor_surf_night,floor_offset_pos)
 		self.display_surface.blit(self.floor_surf,floor_offset_pos)
-
-		debug(self.day,35,10)
 
 		# for sprite in self.sprites():
 		for sprite in sorted(self.sprites(),key = lambda sprite: sprite.rect.centery):

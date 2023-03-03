@@ -3,9 +3,11 @@ import pygame
 from support import import_folder
 from crafting import *
 from ui import *
+from debug import debug
+from support import tree_position
 
 class Player(pygame.sprite.Sprite):
-	def __init__(self, pos, groups, obstacle_sprites):
+	def __init__(self, pos, groups, obstacle_sprites, object_position):
 		super().__init__(groups)
 		self.image = pygame.image.load('../../Game_world/Icons/player.png').convert_alpha()
 		self.rect = self.image.get_rect(topleft=pos)
@@ -38,6 +40,7 @@ class Player(pygame.sprite.Sprite):
 
 		# mining
 		self.reach = 16		# player can mine object because he's standing close to object
+		self.objects = object_position
 
 
 	def import_player_assets(self):
@@ -75,7 +78,7 @@ class Player(pygame.sprite.Sprite):
 			if keys[pygame.K_SPACE] and not self.attacking:
 				self.attacking = True
 				self.attack_time = pygame.time.get_ticks()
-				print('attack')
+				self.mining()
 
 			# use input
 			if keys[pygame.K_LCTRL] and not self.attacking:
@@ -154,10 +157,19 @@ class Player(pygame.sprite.Sprite):
 		self.image = animation[int(self.frame_index)]
 		self.rect = self.image.get_rect(center = self.hitbox.center)
 
+	def mining(self):
+		for i in range(0,len(self.objects),1):
+			tree_rect = pygame.Rect(self.objects[i][1], self.objects[i][2], self.objects[i][3], self.objects[i][4])
+			if self.hitbox.colliderect(tree_rect):
+				if self.objects[i][0] == 'tree':
+					self.inventory["wood"] += 3
+				else:
+					self.inventory["stone"] += 3
 
 	def update(self):
 		self.input()
 		self.cooldowns()
 		self.get_status()
+		debug(self.inventory)
 		self.animate()
 		self.move(self.speed)

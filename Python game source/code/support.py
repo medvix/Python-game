@@ -26,6 +26,18 @@ def import_folder(path):
 
     return surface_list
 
+class tree_position:
+    def __init__(self):
+        self.positions = []
+
+    def add_position(self, material,x, y):
+        if material == 'tree':
+            self.positions.append((material,x-16, y-16, 64, 64))
+        else:
+            self.positions.append((material, x-16, y-16, 48, 48 ))
+
+    def get_positions(self):
+        return self.positions
 
 
 
