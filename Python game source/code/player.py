@@ -1,7 +1,6 @@
 import pygame
 # from settings import*
 from support import import_folder
-from crafting import *
 from ui import *
 from debug import debug
 from support import tree_position
@@ -30,8 +29,6 @@ class Player(pygame.sprite.Sprite):
 
 		# inventory and crafting
 		self.inventory = {"wood": 0, "stone": 0, "iron": 0}
-		self.crafting = Crafting()
-		self.crafting.set_inventory(self.inventory)
 		self.inventory_cooldown = 400
 		self.inventory_cooldown_end = 0
 
@@ -84,7 +81,6 @@ class Player(pygame.sprite.Sprite):
 			if keys[pygame.K_LCTRL] and not self.attacking:
 				self.attacking = True
 				self.attack_time = pygame.time.get_ticks()
-
 
 		# inventory
 		if keys[pygame.K_e]:

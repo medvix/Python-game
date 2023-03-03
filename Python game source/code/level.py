@@ -64,7 +64,7 @@ class Level:
 		# update and draw the game
 		self.visible_sprites.custom_draw(self.player)
 		self.visible_sprites.update()
-		self.ui.display(self.player,0,0)
+		self.ui.display(self.player.inventory,0,0)
 		if self.player.inventoryIsOpened:
 			self.ui.draw_inventory(self.player)
 

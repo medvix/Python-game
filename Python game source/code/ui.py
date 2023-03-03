@@ -21,18 +21,18 @@ class UI:
         self.stone_image = pygame.image.load("../../Game_world/Icons/Objects/stone/big/stone.png").convert_alpha()
         self.player_image = pygame.image.load("../../Game_world/Icons/Characters/character_anim.gif").convert_alpha()
 
-    def display(self,player,x,y):
+    def display(self,inventory,x,y):
         pygame.draw.rect(self.display_surface,'red',self.health_bar_rect)
         self.display_surface.blit(self.image,((WIDTH //  2) - 160, HEIGTH-50+y))
         self.display_surface.blit(self.stone_image,((WIDTH // 2)-160+8, HEIGTH-50+8+y))
-        self.display_surface.blit(self.font.render('64', True, (255, 255, 255)),((WIDTH // 2)-160+22, HEIGTH-50+3+y))
+        self.display_surface.blit(self.font.render(str(inventory["stone"]), True, (255, 255, 255)),((WIDTH // 2)-160+22, HEIGTH-50+3+y))
         self.display_surface.blit(self.wood_image,((WIDTH // 2)-160+8+32, HEIGTH-50+8+y))
-        self.display_surface.blit(self.font.render('64', True, (255, 255, 255)),((WIDTH // 2)-160+22+32, HEIGTH-50+3+y))
+        self.display_surface.blit(self.font.render(str(inventory["wood"]), True, (255, 255, 255)),((WIDTH // 2)-160+22+32, HEIGTH-50+3+y))
 
     def draw_inventory(self,player):
         if player.inventoryIsOpened:
             self.display_surface.blit(self.inventory,((WIDTH // 2)-170, (HEIGTH // 2)-110))
-            UI.display(self,player,0,-210)
+            UI.display(self,player.inventory,0,-210)
             self.display_surface.blit(self.player_image,((WIDTH // 2)+(55/2), (HEIGTH // 2)-110+(90/2)))
             # rendering button for crafting
             UI.button(self,'click',20,(WIDTH/4)+45,(HEIGTH // 2)-110+1,100,40,'white',(26, 26, 26),'black','white',2)
