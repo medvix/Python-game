@@ -7,12 +7,11 @@ from support import *
 from ui import UI
 from random import choice
 import time
-import player
 
 class Level:
 	def __init__(self):
 
-		# get the display surface 
+		# get the display surface
 		self.display_surface = pygame.display.get_surface()
 
 		# sprite group setup
@@ -35,11 +34,11 @@ class Level:
 			'boundary': import_csv_layout('../../Game_world/export/map_floorblock.csv'),
 			'objects': import_csv_layout('../../Game_world/export/map_objects.csv')
 		}
-		graphics ={
-			'tree': import_folder("../../Game_world/Icons/Objects/tree/Tree_2x2"),
-			'stone': import_folder("../../Game_world/Icons/Objects/stone/big")
-		}
 
+		area_stone = pygame.image.load('../../Game_world/Icons/area_stone.png').convert_alpha()
+		area = pygame.image.load('../../Game_world/Icons/area.png').convert_alpha()
+		tree_image = pygame.image.load('../../Game_world/Icons/Objects/tree/Tree_2x2/1.png').convert_alpha()
+		stone_image = pygame.image.load('../../Game_world/Icons/Objects/stone/big/stone.png').convert_alpha()
 
 		for style,layout in layouts.items():
 			for row_index, row in enumerate(layout):
@@ -50,12 +49,12 @@ class Level:
 						if style == 'boundary':
 							Tile((x,y),[self.obstacle_sprites],'invisible')
 						if style == 'objects' and col == '1':
-							random_tree_image = choice(graphics['tree'])
-							Tile((x,y),[self.visible_sprites,self.obstacle_sprites],'tree',random_tree_image)
+							Tile((x-18,y-18),[self.visible_sprites],'area',area)
+							Tile((x,y),[self.visible_sprites,self.obstacle_sprites],'tree',tree_image)
 							self.trees.add_position('tree',x,y)
 						if style == 'objects' and col == '17':
-							random_stone_image = choice(graphics['stone'])
-							Tile((x,y),[self.visible_sprites,self.obstacle_sprites],'stone',random_stone_image)
+							Tile((x-17,y-17),[self.visible_sprites],'area',area_stone)
+							Tile((x,y),[self.visible_sprites,self.obstacle_sprites],'stone',stone_image)
 							self.trees.add_position('stone',x,y)
 
 		self.player = Player((1400, 1000), [self.visible_sprites], self.obstacle_sprites, self.trees.get_positions())

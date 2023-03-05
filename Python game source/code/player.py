@@ -5,12 +5,13 @@ from ui import *
 from debug import debug
 from support import tree_position
 
+
 class Player(pygame.sprite.Sprite):
 	def __init__(self, pos, groups, obstacle_sprites, object_position):
 		super().__init__(groups)
 		self.image = pygame.image.load('../../Game_world/Icons/player.png').convert_alpha()
 		self.rect = self.image.get_rect(topleft=pos)
-		self.hitbox = self.rect.inflate(0, 16)
+		self.hitbox = self.rect.inflate(0, 0)
 
 		self.player_position = pos
 
@@ -28,7 +29,7 @@ class Player(pygame.sprite.Sprite):
 		self.attack_time = None
 
 		# inventory and crafting
-		self.inventory = {"wood": 0, "stone": 0, "iron": 0}
+		self.inventory = {"wood": 0, "stone": 0, "sticks": 0, "axe": 0, "pickaxe": 0}
 		self.inventory_cooldown = 400
 		self.inventory_cooldown_end = 0
 
@@ -36,7 +37,6 @@ class Player(pygame.sprite.Sprite):
 		self.inventoryIsOpened = False
 
 		# mining
-		self.reach = 16		# player can mine object because he's standing close to object
 		self.objects = object_position
 
 
