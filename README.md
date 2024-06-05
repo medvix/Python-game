@@ -20,7 +20,7 @@ The objective of this project was to develop a 2D survival arcade game. In this 
 ### Installation
 1. **Clone the repository:**
     ```sh
-    git clone [https://github.com/username/survival-game.git](https://github.com/medvix/Python-game.git)
+    git clone https://github.com/medvix/Python-game.git
     ```
 2. **Navigate to the project directory:**
     ```sh
